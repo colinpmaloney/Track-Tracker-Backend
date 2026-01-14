@@ -27,13 +27,20 @@ Soundcloud ───┘
 ## Project Structure
 ```
 track-tracker/
-├── ingestion/          # API polling scripts
-├── processing/         # Data transformation
-├── api/                # FastAPI backend
-├── dashboard/          # NextJS frontend
-├── airflow/            # DAG definitions
-├── infrastructure/     # Terraform configs
-└── tests/
+├── app/
+│   ├── ingestion/          # API polling scripts
+│   ├── processing/         # Data transformation
+│   ├── api/                # FastAPI backend
+│   ├── dashboard/          # NextJS frontend
+│   ├── airflow/            # DAG definitions
+│   └── infrastructure/     # Terraform configs
+├── tests/
+├── env/
+│   └── .env.example        
+├── .gitignore
+├── pyproject.toml        
+├── uv.lock             
+└── README.md
 ```
 
 ## Setup
@@ -47,21 +54,24 @@ track-tracker/
 - Spotify Developer account
 
 ### Installation
+### Installation
 ```bash
 # Clone repo
-git clone https://github.com/yourusername/track-tracker.git
-cd track-tracker
+git clone https://github.com/Best-Code/track-tracker.git
+cd track-tracker-backend
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate
+# Install UV (if not installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # Set environment variables
 cp .env.example .env
 # Edit .env with your API credentials
+
+# Run a script
+uv run python app/ingestion/spotify.py
 ```
 
 ## Environment Variables
