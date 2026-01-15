@@ -31,7 +31,7 @@ def setup_logging(verbose: bool = False) -> None:
 
 def cmd_ingest(args: argparse.Namespace) -> int:
     """Run Spotify ingestion pipeline."""
-    from app.ingestion.spotify.ingest_to_db import ingest_new_releases
+    from app.ingestion.spotify.spotify_to_db import ingest_new_releases
 
     result = ingest_new_releases(limit=args.limit)
     print(f"Ingested {result.tracks_processed} tracks, {result.snapshots_created} snapshots")

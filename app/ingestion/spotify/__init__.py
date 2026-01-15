@@ -9,7 +9,7 @@ Main exports:
     ingest_new_releases: Fetch and store new release data
 """
 
-from app.ingestion.spotify.ingest_to_db import (
+from app.ingestion.spotify.spotify_to_db import (
     get_spotify_client,
     ingest_new_releases,
     IngestionResult,
