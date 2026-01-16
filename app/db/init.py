@@ -8,7 +8,7 @@ Usage:
     init_db()
 """
 
-from app.db.database import engine, Base
+from app.db.database import get_engine, Base
 
 
 def init_db() -> None:
@@ -21,5 +21,5 @@ def init_db() -> None:
     # Import models to ensure they're registered with Base
     from app.db import models  # noqa: F401
 
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=get_engine())
     print("Tables created")

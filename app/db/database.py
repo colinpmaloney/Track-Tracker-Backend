@@ -19,30 +19,66 @@ Usage:
 
 import os
 from contextlib import contextmanager
-from typing import Generator
+from typing import Generator, Optional
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-if not DATABASE_URL:
-    raise EnvironmentError(
-        "DATABASE_URL environment variable is required. "
-        "Expected format: postgresql://user:pass@host:5432/dbname"
-    )
-
-# Configure engine with connection pooling for scale
-engine = create_engine(
-    DATABASE_URL,
-    pool_size=5,  # Number of connections to keep open
-    max_overflow=10,  # Additional connections allowed beyond pool_size
-    pool_timeout=30,  # Seconds to wait for available connection
-    pool_recycle=1800,  # Recycle connections after 30 minutes
-)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Declarative base for ORM models (safe to import without DATABASE_URL)
 Base = declarative_base()
+
+# Module-level singletons (lazily initialized)
+_engine: Optional[Engine] = None
+_SessionLocal: Optional[sessionmaker] = None
+
+
+def _get_database_url() -> str:
+    """Get and validate the DATABASE_URL environment variable."""
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        raise EnvironmentError(
+            "DATABASE_URL environment variable is required. "
+            "Expected format: postgresql://user:pass@host:5432/dbname"
+        )
+    return url
+
+
+def get_engine() -> Engine:
+    """
+    Get or create the SQLAlchemy engine (lazy initialization).
+
+    Returns:
+        Engine: Configured SQLAlchemy engine with connection pooling
+    """
+    global _engine
+    if _engine is None:
+        _engine = create_engine(
+            _get_database_url(),
+            pool_size=5,  # Number of connections to keep open
+            max_overflow=10,  # Additional connections allowed beyond pool_size
+            pool_timeout=30,  # Seconds to wait for available connection
+            pool_recycle=1800,  # Recycle connections after 30 minutes
+        )
+    return _engine
+
+
+def get_session_factory() -> sessionmaker:
+    """
+    Get or create the session factory (lazy initialization).
+
+    Returns:
+        sessionmaker: Configured session factory bound to the engine
+    """
+    global _SessionLocal
+    if _SessionLocal is None:
+        _SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
+    return _SessionLocal
+
+
+def SessionLocal() -> Session:
+    """Create a new database session."""
+    return get_session_factory()()
 
 
 def get_db() -> Generator[Session, None, None]:

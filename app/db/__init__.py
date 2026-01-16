@@ -10,7 +10,7 @@ Modules:
     init: Database initialization utilities
 """
 
-from app.db.database import Base, SessionLocal, get_db, get_db_context, engine
+from app.db.database import Base, SessionLocal, get_db, get_db_context, get_engine
 from app.db.init import init_db
 from app.db.models import Track, TrackSnapshot
 
@@ -19,7 +19,7 @@ __all__ = [
     "SessionLocal",
     "get_db",
     "get_db_context",
-    "engine",
+    "get_engine",
     "init_db",
     "Track",
     "TrackSnapshot",
