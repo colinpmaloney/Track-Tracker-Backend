@@ -2,8 +2,17 @@
 /env
 .venv
 
-# pycache
+# Python cache
 __pycache__/
+*.pyc
+*.pyo
+
+# Test cache
+.pytest_cache/
+.cache
+
+# Linter cache
+.ruff_cache/
 
 # Claude
 .claude
