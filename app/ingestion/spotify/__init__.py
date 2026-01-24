@@ -1,0 +1,4 @@
+"""
+Spotify API integration module.
+"""
+
