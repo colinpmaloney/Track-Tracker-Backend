@@ -1,7 +1,7 @@
 # Environment variables
 /env
 .venv
-
+.env
 # Python cache
 __pycache__/
 *.pyc
