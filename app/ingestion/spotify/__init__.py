@@ -1,3 +1,3 @@
 """
-Spotify API integration module.
+Spotify API ingestion module.
 """
